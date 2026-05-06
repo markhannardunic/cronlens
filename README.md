@@ -49,6 +49,21 @@ cronlens stores job data in `~/.cronlens/data.db` by default. Override with the 
 export CRONLENS_DATA_DIR=/var/lib/cronlens
 ```
 
+## Flags
+
+### `cronlens exec`
+
+| Flag | Description | Default |
+|------|-------------|----------|
+| `--name` | Unique name for the job (required) | — |
+| `--timeout` | Kill the job after this duration (e.g. `30m`, `2h`) | none |
+
+### `cronlens dashboard`
+
+| Flag | Description | Default |
+|------|-------------|----------|
+| `--port` | Port to serve the dashboard on | `7777` |
+
 ## Requirements
 
 - Go 1.21+
