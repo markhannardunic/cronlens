@@ -13,4 +13,13 @@
 // For testing or custom sinks, use NewWithWriter to redirect output:
 //
 //	n := notifier.NewWithWriter(3, myWriter)
+//
+// Consecutive failure counting
+//
+// The Notifier inspects runs in reverse-chronological order (most recent
+// first). It increments an internal counter for each failed run and resets
+// the counter as soon as a successful run is encountered. An alert is
+// emitted only once per threshold crossing — subsequent calls to Check will
+// not repeat the alert unless the counter is reset by an intervening
+// success.
 package notifier
