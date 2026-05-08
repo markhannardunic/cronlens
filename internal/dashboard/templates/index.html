@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>cronlens</title>
+  <style>
+    body { font-family: monospace; background: #0f0f0f; color: #e0e0e0; margin: 2rem; }
+    h1   { color: #7ec8e3; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th   { text-align: left; padding: 0.5rem 1rem; background: #1e1e1e; color: #aaa; }
+    td   { padding: 0.5rem 1rem; border-bottom: 1px solid #2a2a2a; }
+    tr:hover td { background: #1a1a1a; }
+    .ok    { color: #6fcf97; }
+    .error { color: #eb5757; }
+    .meta  { font-size: 0.8rem; color: #555; margin-top: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>&#128269; cronlens</h1>
+  {{if .Jobs}}
+  <table>
+    <thead>
+      <tr>
+        <th>Job</th>
+        <th>Last Run</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Recent Failures</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Jobs}}
+      <tr>
+        <td>{{.Name}}</td>
+        <td>{{.LastRun}}</td>
+        <td>{{.Duration}}</td>
+        <td class="{{.Status}}">{{.Status}}</td>
+        <td>{{.Failures}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}
+  <p>No jobs recorded yet.</p>
+  {{end}}
+  <p class="meta">Rendered at {{.Rendered}}</p>
+</body>
+</html>
