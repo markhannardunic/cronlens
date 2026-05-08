@@ -25,20 +25,27 @@ func newTestScheduler(t *testing.T, jobs map[string]string) *scheduler.Scheduler
 	return s
 }
 
+// doGetSchedule sends a GET /schedule request to the handler and returns the
+// decoded response body and HTTP status code.
+func doGetSchedule(t *testing.T, h http.Handler) ([]map[string]string, int) {
+	t.Helper()
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/schedule", nil))
+	var out []map[string]string
+	if err := json.NewDecoder(rec.Body).Decode(&out); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	return out, rec.Code
+}
+
 func TestScheduleHandler_Empty(t *testing.T) {
 	s := scheduler.New()
 	h := api.NewScheduleHandler(s)
 
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/schedule", nil))
+	out, code := doGetSchedule(t, h)
 
-	if rec.Code != http.StatusOK {
-		t.Fatalf("expected 200, got %d", rec.Code)
-	}
-
-	var out []map[string]string
-	if err := json.NewDecoder(rec.Body).Decode(&out); err != nil {
-		t.Fatalf("decode: %v", err)
+	if code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", code)
 	}
 	if len(out) != 0 {
 		t.Errorf("expected empty list, got %d items", len(out))
@@ -52,16 +59,10 @@ func TestScheduleHandler_WithJobs(t *testing.T) {
 	})
 	h := api.NewScheduleHandler(s)
 
-	rec := httptest.NewRecorder()
-	h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/schedule", nil))
+	out, code := doGetSchedule(t, h)
 
-	if rec.Code != http.StatusOK {
-		t.Fatalf("expected 200, got %d", rec.Code)
-	}
-
-	var out []map[string]string
-	if err := json.NewDecoder(rec.Body).Decode(&out); err != nil {
-		t.Fatalf("decode: %v", err)
+	if code != http.StatusOK {
+		t.Fatalf("expected 200, got %d", code)
 	}
 	if len(out) != 2 {
 		t.Errorf("expected 2 entries, got %d", len(out))
