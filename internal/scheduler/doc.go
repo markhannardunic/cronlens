@@ -5,10 +5,18 @@
 // backed by a collector.Collector which handles execution and result
 // recording.
 //
+// The scheduler supports graceful shutdown via Stop, which blocks until all
+// currently running jobs have completed before returning.
+//
+// Job names must be unique within a scheduler instance. Attempting to
+// register a duplicate name will return an error.
+//
 // Usage:
 //
 //	s := scheduler.New()
-//	s.Register("health-check", "@every 1m", myCollector)
+//	if err := s.Register("health-check", "@every 1m", myCollector); err != nil {
+//		log.Fatal(err)
+//	}
 //	s.Start()
 //	defer s.Stop()
 package scheduler
