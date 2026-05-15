@@ -6,6 +6,7 @@ package jobmeta
 
 import (
 	"errors"
+	"sort"
 	"sync"
 )
 
@@ -63,6 +64,13 @@ func (r *Registry) Delete(jobName, key string) {
 	}
 }
 
+// DeleteJob removes all metadata entries for the given job name.
+func (r *Registry) DeleteJob(jobName string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	delete(r.data, jobName)
+}
+
 // JobNames returns the sorted list of job names that have at least one
 // metadata entry.
 func (r *Registry) JobNames() []string {
@@ -74,5 +82,6 @@ func (r *Registry) JobNames() []string {
 			names = append(names, name)
 		}
 	}
+	sort.Strings(names)
 	return names
 }
